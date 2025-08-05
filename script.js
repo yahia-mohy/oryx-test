@@ -22,7 +22,7 @@ document.addEventListener('mousemove', (e) => {
     });
 });
 
-// Cursor trail animation
+// Cursor trail animation with particle effect
 function animateTrail() {
     trailX += (mouseX - trailX) * 0.1;
     trailY += (mouseY - trailY) * 0.1;
@@ -32,33 +32,65 @@ function animateTrail() {
         y: trailY - 4
     });
     
+    // Create trailing particles
+    if (Math.random() > 0.8) {
+        createParticle(trailX, trailY);
+    }
+    
     requestAnimationFrame(animateTrail);
 }
 animateTrail();
 
-// Parallax effect for hero background
+// Create trailing particles
+function createParticle(x, y) {
+    const particle = document.createElement('div');
+    particle.style.position = 'fixed';
+    particle.style.width = '3px';
+    particle.style.height = '3px';
+    particle.style.background = '#ffa500';
+    particle.style.borderRadius = '50%';
+    particle.style.pointerEvents = 'none';
+    particle.style.zIndex = '9997';
+    particle.style.left = x + 'px';
+    particle.style.top = y + 'px';
+    particle.style.boxShadow = '0 0 6px rgba(255, 165, 0, 0.8)';
+    
+    document.body.appendChild(particle);
+    
+    gsap.to(particle, {
+        opacity: 0,
+        scale: 0,
+        duration: 0.5,
+        ease: "power2.out",
+        onComplete: () => {
+            document.body.removeChild(particle);
+        }
+    });
+}
+
+// Parallax effect for hero background layers
 document.addEventListener('mousemove', (e) => {
     const mouseXPercent = (e.clientX / window.innerWidth) * 100;
     const mouseYPercent = (e.clientY / window.innerHeight) * 100;
     
     gsap.to('.layer-1', {
-        x: (mouseXPercent - 50) * 0.5,
-        y: (mouseYPercent - 50) * 0.3,
-        duration: 1,
+        x: (mouseXPercent - 50) * 0.8,
+        y: (mouseYPercent - 50) * 0.6,
+        duration: 1.5,
         ease: "power2.out"
     });
     
     gsap.to('.layer-2', {
-        x: (mouseXPercent - 50) * 0.3,
-        y: (mouseYPercent - 50) * 0.2,
-        duration: 1.2,
+        x: (mouseXPercent - 50) * 0.5,
+        y: (mouseYPercent - 50) * 0.4,
+        duration: 2,
         ease: "power2.out"
     });
     
     gsap.to('.layer-3', {
-        x: (mouseXPercent - 50) * 0.1,
-        y: (mouseYPercent - 50) * 0.1,
-        duration: 1.5,
+        x: (mouseXPercent - 50) * 0.3,
+        y: (mouseYPercent - 50) * 0.2,
+        duration: 2.5,
         ease: "power2.out"
     });
 });
@@ -68,22 +100,22 @@ gsap.timeline()
     .to('.title-line', {
         opacity: 1,
         y: 0,
-        duration: 1,
-        stagger: 0.2,
+        duration: 1.2,
+        stagger: 0.3,
         ease: "power3.out"
     })
     .to('.hero-subtitle', {
         opacity: 1,
         y: 0,
-        duration: 0.8,
+        duration: 1,
         ease: "power3.out"
-    }, "-=0.5")
+    }, "-=0.6")
     .to('.cta-button', {
         opacity: 1,
         y: 0,
-        duration: 0.8,
+        duration: 1,
         ease: "power3.out"
-    }, "-=0.3");
+    }, "-=0.4");
 
 // Scroll-triggered animations
 // Section titles
@@ -91,7 +123,7 @@ gsap.utils.toArray('.section-title').forEach(title => {
     gsap.to(title, {
         opacity: 1,
         y: 0,
-        duration: 1,
+        duration: 1.2,
         ease: "power3.out",
         scrollTrigger: {
             trigger: title,
@@ -107,7 +139,7 @@ gsap.utils.toArray('.section-text').forEach(text => {
     gsap.to(text, {
         opacity: 1,
         y: 0,
-        duration: 0.8,
+        duration: 1,
         ease: "power3.out",
         scrollTrigger: {
             trigger: text,
@@ -118,12 +150,12 @@ gsap.utils.toArray('.section-text').forEach(text => {
     });
 });
 
-// Vision items
+// Vision items with stagger
 gsap.utils.toArray('.vision-item').forEach((item, index) => {
     gsap.to(item, {
         opacity: 1,
         y: 0,
-        duration: 0.8,
+        duration: 1,
         delay: index * 0.2,
         ease: "power3.out",
         scrollTrigger: {
@@ -140,8 +172,8 @@ gsap.utils.toArray('.form-group').forEach((group, index) => {
     gsap.to(group, {
         opacity: 1,
         y: 0,
-        duration: 0.6,
-        delay: index * 0.1,
+        duration: 0.8,
+        delay: index * 0.15,
         ease: "power3.out",
         scrollTrigger: {
             trigger: group,
@@ -155,7 +187,7 @@ gsap.utils.toArray('.form-group').forEach((group, index) => {
 gsap.to('.submit-button', {
     opacity: 1,
     y: 0,
-    duration: 0.8,
+    duration: 1,
     ease: "power3.out",
     scrollTrigger: {
         trigger: '.submit-button',
@@ -212,7 +244,7 @@ document.getElementById('contactForm').addEventListener('submit', (e) => {
             ease: "power2.inOut"
         });
         
-        // Show success message (in a real app, you'd send the data to a server)
+        // Show success message
         setTimeout(() => {
             alert('Thank you for your message! We\'ll get back to you soon.');
             e.target.reset();
@@ -220,11 +252,18 @@ document.getElementById('contactForm').addEventListener('submit', (e) => {
     }
 });
 
-// Hover effects for interactive elements
+// Enhanced hover effects for interactive elements
 document.querySelectorAll('.cta-button, .submit-button, .vision-item').forEach(element => {
     element.addEventListener('mouseenter', () => {
         gsap.to(cursor, {
-            scale: 1.5,
+            scale: 1.8,
+            duration: 0.3,
+            ease: "power2.out"
+        });
+        
+        // Add glow effect
+        gsap.to(cursor, {
+            boxShadow: '0 0 30px rgba(255, 165, 0, 0.8)',
             duration: 0.3,
             ease: "power2.out"
         });
@@ -233,11 +272,33 @@ document.querySelectorAll('.cta-button, .submit-button, .vision-item').forEach(e
     element.addEventListener('mouseleave', () => {
         gsap.to(cursor, {
             scale: 1,
+            boxShadow: '0 0 20px rgba(255, 165, 0, 0.5)',
             duration: 0.3,
             ease: "power2.out"
         });
     });
 });
+
+// Video optimization
+const heroVideo = document.getElementById('hero-video');
+if (heroVideo) {
+    heroVideo.addEventListener('loadeddata', () => {
+        heroVideo.play();
+    });
+    
+    // Pause video when not in viewport for performance
+    const videoObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                heroVideo.play();
+            } else {
+                heroVideo.pause();
+            }
+        });
+    });
+    
+    videoObserver.observe(heroVideo);
+}
 
 // Resize handler for responsive behavior
 window.addEventListener('resize', () => {
@@ -256,9 +317,16 @@ if (window.innerWidth <= 768) {
         const mouseYPercent = (e.clientY / window.innerHeight) * 100;
         
         gsap.to('.layer-1', {
-            x: (mouseXPercent - 50) * 0.1,
+            x: (mouseXPercent - 50) * 0.2,
             y: (mouseYPercent - 50) * 0.1,
-            duration: 2,
+            duration: 3,
+            ease: "power2.out"
+        });
+        
+        gsap.to('.layer-2', {
+            x: (mouseXPercent - 50) * 0.1,
+            y: (mouseYPercent - 50) * 0.05,
+            duration: 3.5,
             ease: "power2.out"
         });
     });
@@ -268,8 +336,27 @@ if (window.innerWidth <= 768) {
 window.addEventListener('load', () => {
     gsap.from('body', {
         opacity: 0,
-        duration: 0.5,
+        duration: 0.8,
         ease: "power2.out"
     });
+    
+    // Ensure video starts playing
+    if (heroVideo) {
+        heroVideo.play();
+    }
+});
+
+// Add scroll-based parallax for video
+window.addEventListener('scroll', () => {
+    const scrolled = window.pageYOffset;
+    const parallax = scrolled * 0.5;
+    
+    if (heroVideo) {
+        gsap.to(heroVideo, {
+            y: parallax,
+            duration: 0.5,
+            ease: "power2.out"
+        });
+    }
 });
 
